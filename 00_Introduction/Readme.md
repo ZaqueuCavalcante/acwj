@@ -1,60 +1,32 @@
 # Part 0: Introduction
 
-I've decided to go on a compiler writing journey. In the past I've written some
-[assemblers](https://github.com/DoctorWkt/pdp7-unix/blob/master/tools/as7), and
-I've written a [simple compiler](https://github.com/DoctorWkt/h-compiler)
-for a typeless language. But I've never written a compiler that can compile
-itself. So that's where I'm headed on this journey.
+Decidi embarcar em uma jornada de construção de compiladores. No passado, escrevi alguns [*assemblers*](https://github.com/DoctorWkt/pdp7-unix/blob/master/tools/as7) e um [*compilador simples*](https://github.com/DoctorWkt/h-compiler) para uma linguagem não tipada. No entanto, nunca escrevi um compilador capaz de se auto-compilar. É isso que pretendo fazer nessa jornada.
 
-As part of the process, I'm going to write up my work so that others can
-follow along. This will also help me to clarify my thoughts and ideas.
-Hopefully you, and I, will find this useful!
+Como parte do processo, vou descrever meu trabalho para que outros possam acompanhá-lo. Isso também me ajudará a esclarecer meus pensamentos e ideias. Espero que você e eu achemos isso útil! 
 
 ## Goals of the Journey
 
-Here are my goals, and non-goals, for the journey:
+Aqui estão meus objetivos, e não objetivos, para a jornada:
 
- + To write a self-compiling compiler. I think that if the compiler can
-   compile itself, it gets to call itself a *real* compiler.
- + To target at least one real hardware platform. I've seen a few compilers
-   that generate code for hypothetical machines. I want my compiler to
-   work on real hardware. Also, if possible, I want to write the compiler
-   so that it can support multiple backends for different hardware platforms.
- + Practical before research. There's a whole lot of research in the area of
-   compilers. I want to start from absolute zero on this journey, so I'll
-   tend to go for a practical approach and not a theory-heavy approach. That
-   said, there will be times when I'll need to introduce (and implement) some
-   theory-based stuff.
- + Follow the KISS principle: keep it simple, stupid! I'm definitely going to
-   be using Ken Thompson's principle here: "When in doubt, use brute force."
- + Take a lot of small steps to reach the final goal. I'll break the journey
-   up into a lot of simple steps instead of taking large leaps. This will
-   make each new addition to the compiler a bite-sized and easily digestible
-   thing.
+ + **Escrever um compilador auto-compilável.** Acho que se o compilador pode compilar a si mesmo, ele pode ser considerado um compilador real.
+ + **Atingir pelo menos uma plataforma de hardware real.** Já vi alguns compiladores que geram código para máquinas hipotéticas. Quero que o meu funcione em hardware real. Além disso, se possível, quero que ele suporte vários *back-ends* para diferentes plataformas de hardware.
+ + **Praticar antes de pesquisar.** Há muita pesquisa na área de compiladores. Eu quero começar do zero absoluto nesta jornada, então tentarei seguir uma abordagem prática e sem muita carga teórica. Dito isso, haverá momentos que precisarei apresentar (e implementar) algumas coisas baseadas em teoria.
+ + **Seguir o *KISS principle: keep it simple, stupid!*** Definitivamente vou usar o princípio de Ken Thompson aqui: *"Na dúvida, use a força bruta."*
+ + **Dar um monte de passos pequenos para chegar ao objetivo final.** Dividirei a jornada em várias etapas simples, em vez de dar grandes saltos. Isso tornará cada nova adição ao compilador uma coisa pequena e facilmente administrável.
 
 ## Target Language
 
-The choice of a target language is difficult. If I choose a high-level
-language like Python, Go etc., then I'll have to implement a whole pile
-of libraries and classes as they are built-in to the language.
+É difícil escolher uma linguagem alvo. Se eu escolher uma linguagem de alto nível, como Python, Go etc., terei que implementar uma pilha inteira de bibliotecas e classes, já que elas são integradas à linguagem.
 
-I could write a compiler for a language like Lisp, but these can be
-[done easily](ftp://publications.ai.mit.edu/ai-publications/pdf/AIM-039.pdf).
+Eu poderia escrever um compilador para uma linguagem como Lisp, mas isso pode ser [feito facilmente](ftp://publications.ai.mit.edu/ai-publications/pdf/AIM-039.pdf).
 
-Instead, I've fallen back on the old standby and I'm going to write a
-compiler for a subset of C, enough to allow the compiler to compile
-itself.
+Em vez disso, vou escrever um compilador para um *subset* de C, que seja capaz de se auto-compilar.
 
-C is just a step up from assembly language (for some subset of C, not
-[C18](https://en.wikipedia.org/wiki/C18_(C_standard_revision))), and this
-will help make the task of compiling the C code down to assembly somewhat
-easier. Oh, and I also like C.
+C está há apenas um nível de abstração acima de Assembly (em se tratando de algum subset de C, não de [C18](https://en.wikipedia.org/wiki/C18_(C_standard_revision))) e isso ajudará a tornar a tarefa de compilar o código C até Assembly um pouco mais fácil. Ah, o mais importante, eu também gosto de C.
 
 ## The Basics of a Compiler's Job
 
-The job of a compiler is to translate input in one language (usually
-a high-level language) into a different output language (usually a
-lower-level language than the input). The main steps are:
+O trabalho de um compilador é **traduzir** um programa escrito em uma linguagem (usualmente de alto-nível) para outra linguagem (normalmente de nível mais baixo que a de entrada). As principais etapas são:
 
 ![](Figs/parsing_steps.png)
 
